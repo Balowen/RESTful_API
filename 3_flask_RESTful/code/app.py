@@ -33,6 +33,11 @@ class Item(Resource):
         items.append(item)
         return item, 201    # 201 CREATED
 
+    def delete(self,name):
+        global items    # items variable in this block is the global items variable
+        items = list(filter(lambda x: x['name'] != name, items))
+        return {'message': 'Item deleted'}
+
 
 class ItemList(Resource):
     def get(self):
