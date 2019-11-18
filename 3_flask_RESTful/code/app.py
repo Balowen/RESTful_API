@@ -1,13 +1,20 @@
 from flask import Flask, request
 from flask_restful import Resource, Api
+from flask_jwt import JWT, jwt_required
+
+from security import authenticate, identity
 
 app = Flask(__name__)
+app.secret_key = 'bart'
 api = Api(app)
+
+jwt = JWT(app, authenticate, identity)  # creates /auth endpoint
 
 items = []
 
 # Every resource has to be a class
 class Item(Resource):
+    @jwt_required()     #we have to authenticate before calling get()
     def get(self, name):
         # returns first matching item, parameter is a default value, in case if none is found
         item = next(filter(lambda x: x['name'] == name, items), None)
