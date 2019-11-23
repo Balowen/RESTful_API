@@ -131,3 +131,7 @@ dmypy.json
 
 .vscode/settings.json
 4_storing_res_in_sqlDb/code/data.db
+5_sqlAlchemy/code/data.db
+5_sqlAlchemy/.vscode/settings.json
+5_sqlAlchemy/code/data.db
+5_sqlAlchemy/code/data.db
