@@ -13,7 +13,11 @@ class Item(Resource):
 
     @jwt_required()     #we have to authenticate before calling get()
     def get(self, name):
-        item = self.find_by_name(name)
+        try:
+            item = self.find_by_name(name)
+        except:
+            return {"message": "An error occurred finding the item."}, 500  # Internal Server Error
+
         if item:
             return item
         return {'message': 'Item not found'}, 404
@@ -40,7 +44,17 @@ class Item(Resource):
         data = Item.parser.parse_args()
 
         item = {'name': name, 'price': data['price']}
-        
+
+        try:
+            self.insert(item)
+        except:
+            return {"message": "An error occurred inserting the item."}, 500    # Internal Server Error
+
+        return item, 201    # 201 CREATED
+
+    @classmethod
+    def insert(cls, item):
+        """Inserts the item to the database"""
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
 
@@ -49,8 +63,6 @@ class Item(Resource):
 
         connection.commit()
         connection.close()
-
-        return item, 201    # 201 CREATED
 
     def delete(self,name):
         if self.find_by_name(name) is None:
