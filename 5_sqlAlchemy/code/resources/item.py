@@ -26,10 +26,10 @@ class Item(Resource):
         #either matching item and 200 OK, or None and 404 
            
     def post(self,name):
-        if self.find_by_name(name):
+        if ItemModel.find_by_name(name):
             return {'message': "An item with name '{}' already exists.".format(name)}, 400  # 400 - Bad request
 
-        data = ItemModel.parser.parse_args()
+        data = Item.parser.parse_args()
 
         item = ItemModel(name, data['price'])
 
@@ -41,7 +41,7 @@ class Item(Resource):
         return item.json(), 201    # 201 CREATED
    
     def delete(self,name):
-        if self.find_by_name(name) is None:
+        if ItemModel.find_by_name(name) is None:
             return {'message': "An item with name '{}' doesn't exists.".format(name)}, 400  # 400 - Bad request
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
@@ -56,7 +56,7 @@ class Item(Resource):
 
     def put(self, name):
         """Insert an item or update existing item"""   
-        data = ItemModel.parser.parse_args()
+        data = Item.parser.parse_args()
 
         item = ItemModel.find_by_name(name)
         updated_item = ItemModel(name, data['price'])
