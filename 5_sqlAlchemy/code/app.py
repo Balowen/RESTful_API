@@ -8,9 +8,16 @@ from security import authenticate, identity
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # turns off flask_sqlalchemy modification tracker
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False    # turns off flask_sqlalchemy modification tracker
 app.secret_key = 'bart'
 api = Api(app)
+
+
+@app.before_first_request
+def create_tables():
+
+    db.create_all()
+
 
 jwt = JWT(app, authenticate, identity)  # creates /auth endpoint
 
